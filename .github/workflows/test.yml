@@ -1,0 +1,19 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - $default-branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::274147449864:role/GHAAwsLambdaRieGateway
+          role-session-name: TestSession
+          aws-region: us-east-1
