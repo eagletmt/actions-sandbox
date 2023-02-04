@@ -6,6 +6,7 @@ on:
 
 jobs:
   labeled:
+    if: ${{ github.event.label.name == 'bug' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.label.name }}
+      - run: echo ${{ github.event.issue.assignees }}
