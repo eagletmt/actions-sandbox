@@ -1,0 +1,11 @@
+name: Labeled
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  labeled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.label.name }}
