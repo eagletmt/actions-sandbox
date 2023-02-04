@@ -6,7 +6,7 @@ on:
 
 jobs:
   labeled:
-    if: ${{ github.event.label.name == 'bug' }}
+    if: ${{ github.event.label.name == 'bug' && toJSON(github.event.issue.assignees) == '[]' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ toJSON(github.event.issue.assignees) }}
+      - run: echo 'bug issue without assignees'
