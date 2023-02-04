@@ -9,4 +9,4 @@ jobs:
     if: ${{ github.event.label.name == 'bug' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.issue.assignees }}
+      - run: echo ${{ toJSON(github.event.issue.assignees) }}
