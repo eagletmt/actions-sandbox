@@ -13,7 +13,7 @@ jobs:
       # Need issues.write to add assignee
       issues: write
     env:
-      PD_ASSIGNEE_VERSION: v0.1.1
+      PD_ASSIGNEE_VERSION: v0.1.2
       PD_ASSIGNEE_TARGET: x86_64-unknown-linux-gnu
     steps:
       - id: cache-pd-assignee
@@ -40,7 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ORG: octillery-eagletmt-test
           GITHUB_TEAM_SLUG: test
-          DEFAULT_ASSIGNEE: github@wanko.cc
-          RUST_LOG: debug
-        run: pd-assignee
-        # - run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
+          DEFAULT_ASSIGNEE: eagletmt
+        run: pd-assignee >> $GITHUB_OUTPUT
+      - run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
