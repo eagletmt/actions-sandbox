@@ -13,13 +13,6 @@ jobs:
       # Need issues.write to add assignee
       issues: write
     env:
-      PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
-      PAGERDUTY_SCHEDULE_ID: P34O7S8
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_ORG: octillery-eagletmt-test
-      GITHUB_TEAM_SLUG: test
-      DEFAULT_ASSIGNEE: github@wanko.cc
-    env:
       PD_ASSIGNEE_VERSION: v0.1.0
       PD_ASSIGNEE_TARGET: x86_64-unknown-linux-gnu
     steps:
@@ -40,5 +33,12 @@ jobs:
           popd
           echo "$BINDIR" >> $GITHUB_PATH
       - id: pd-assignee
+        env:
+          PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+          PAGERDUTY_SCHEDULE_ID: P34O7S8
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ORG: octillery-eagletmt-test
+          GITHUB_TEAM_SLUG: test
+          DEFAULT_ASSIGNEE: github@wanko.cc
         run: pd-assignee >> $GITHUB_OUTPUT
       - run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
