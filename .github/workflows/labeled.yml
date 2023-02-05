@@ -42,4 +42,6 @@ jobs:
           GITHUB_TEAM_SLUG: test
           DEFAULT_ASSIGNEE: eagletmt
         run: pd-assignee >> $GITHUB_OUTPUT
-      - run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
