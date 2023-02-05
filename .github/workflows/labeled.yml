@@ -5,8 +5,40 @@ on:
     types: [labeled]
 
 jobs:
-  labeled:
-    if: ${{ github.event.label.name == 'bug' && toJSON(github.event.issue.assignees) == '[]' }}
+  choose-assignee:
     runs-on: ubuntu-latest
+    # Choose assignee if the issue has "bug" label and no assignees.
+    if: ${{ github.event.label.name == 'bug' && toJSON(github.event.issue.assignees) == '[]' }}
+    permissions:
+      # Need issues.write to add assignee
+      issues: write
+    env:
+      PAGERDUTY_API_KEY: ${{ secrets.PAGERDUTY_API_KEY }}
+      PAGERDUTY_SCHEDULE_ID: P34O7S8
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_ORG: octillery-eagletmt-test
+      GITHUB_TEAM_SLUG: test
+      DEFAULT_ASSIGNEE: github@wanko.cc
+    env:
+      PD_ASSIGNEE_VERSION: v0.1.0
+      PD_ASSIGNEE_TARGET: x86_64-unknown-linux-gnu
     steps:
-      - run: echo 'bug issue without assignees'
+      - id: cache-pd-assignee
+        uses: actions/cache@v3
+        with:
+          path: ${{ runner.temp }}/pd-assignee
+          key: ${{ env.PD_ASSIGNEE_VERSION }}-${{ env.PD_ASSIGNEE_TARGET }}
+      - if: steps.cache-pd-assignee.outputs.cache-hit != 'true'
+        env:
+          BINDIR: '${{ runner.temp }}/pd-assignee'
+        run: |
+          mkdir -p "$BINDIR"
+          pushd "$BINDIR"
+          curl -sSfLO "https://github.com/eagletmt/pd-assignee/releases/download/${PD_ASSIGNEE_VERSION}/pd-assignee-${PD_ASSIGNEE_VERSION}-${PD_ASSIGNEE_TARGET}"
+          curl -sSfL "https://github.com/eagletmt/pd-assignee/releases/download/${PD_ASSIGNEE_VERSION}/SHA256SUMS.txt" | sha256 --check --ignore-missing
+          mv "pd-assignee-${PD_ASSIGNEE_VERSION}-${PD_ASSIGNEE_TARGET}" pd-assignee
+          popd
+          echo "$BINDIR" >> $GITHUB_PATH
+      - id: pd-assignee
+        run: pd-assignee >> $GITHUB_OUTPUT
+      - run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ steps.pd-assignee.outputs.assignee }}
