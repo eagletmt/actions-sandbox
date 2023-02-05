@@ -13,7 +13,7 @@ jobs:
       # Need issues.write to add assignee
       issues: write
     env:
-      PD_ASSIGNEE_VERSION: v0.1.0
+      PD_ASSIGNEE_VERSION: v0.1.1
       PD_ASSIGNEE_TARGET: x86_64-unknown-linux-gnu
     steps:
       - id: cache-pd-assignee
