@@ -28,7 +28,7 @@ jobs:
           mkdir -p "$BINDIR"
           pushd "$BINDIR"
           curl -sSfLO "https://github.com/eagletmt/pd-assignee/releases/download/${PD_ASSIGNEE_VERSION}/pd-assignee-${PD_ASSIGNEE_VERSION}-${PD_ASSIGNEE_TARGET}"
-          curl -sSfL "https://github.com/eagletmt/pd-assignee/releases/download/${PD_ASSIGNEE_VERSION}/SHA256SUMS.txt" | sha256 --check --ignore-missing
+          curl -sSfL "https://github.com/eagletmt/pd-assignee/releases/download/${PD_ASSIGNEE_VERSION}/SHA256SUMS.txt" | sha256sum --check --ignore-missing
           mv "pd-assignee-${PD_ASSIGNEE_VERSION}-${PD_ASSIGNEE_TARGET}" pd-assignee
           popd
           echo "$BINDIR" >> $GITHUB_PATH
